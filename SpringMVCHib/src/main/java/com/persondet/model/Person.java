@@ -41,6 +41,8 @@ public class Person {
 		this.country = country;
 	}
 	
-	
+	public String toString() {
+		return "id ="+id+" , name = "+name+" , country = "+country;
+	}
 
 }

@@ -9,18 +9,68 @@ See here for more details: http://gordondickens.com/wordpress/2013/03/27/sawing-
 
     <!-- To enable JMX Management -->
     <jmxConfigurator/>
+    
+     <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>/Users/harikrishnapulivarthi/programs/myLogFile.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d [%thread] %-5level  %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
+  	<appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    		<File>/Users/harikrishnapulivarthi/programs/rest-demo.log</File>
+    		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    		    <!-- daily rollover -->
+    			<FileNamePattern>rest-demo.%d{yyyy-MM-dd}.log</FileNamePattern>
 
-	<!--<logger name="org.hibernate" level="debug"/> -->
-   <!-- Uncomment and add your logger here:
-    <logger name="org.springframework.samples.service.service" level="debug"/> -->
+    			<!-- keep 30 days' worth of history -->
+    			<maxHistory>30</maxHistory>			
+    		</rollingPolicy>
+
+    		<encoder>
+    			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>
+    		</encoder> 	    
+      	</appender>
+      	<appender name="minuteRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    		    <!-- rollover every minute -->
+    			<FileNamePattern>/Users/harikrishnapulivarthi/programs/rest-demo-minute.%d{yyyy-MM-dd_HH-mm}.log</FileNamePattern>
+
+    			<!-- keep 30 minutes' worth of history -->
+    			<maxHistory>30</maxHistory>			
+    		</rollingPolicy>
+
+    		<encoder>
+    			<Pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</Pattern>
+    		</encoder> 	    
+      	</appender>  	
+<logger name="org.hibernate" level="WARN" >
+ <appender-ref ref="console" />
+ </logger>
+   <!-- Uncomment and add your logger here:-->
+    <logger name="org.springframework" level="WARN"> 
+    <appender-ref ref="console" />
+    </logger>
+    
+    <logger name="com.persondet.ctrller" level="warn" additivity="false"> 
+      <!-- additivity is true by default which logs the error twice since Appenders accumulate.
+      order of logger levels: TRACE,DEBUG,INFO,WARN,ERROR    
+       -->
+    <appender-ref ref="console" />
+      <appender-ref ref="fileAppender" />
+        <appender-ref ref="minuteRollingFileAppender" />
+          <appender-ref ref="dailyRollingFileAppender" />
+    </logger>
+  
          
-    <root level="info">
+    <root level="INFO"><!-- default level of root logger is DEBUG , root level can be overriden by children loggers-->
         <appender-ref ref="console"/>
+           <!--      <appender-ref ref="fileAppender" /> --> 
     </root>
 </configuration>
